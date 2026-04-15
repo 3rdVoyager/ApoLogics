@@ -52,7 +52,6 @@ body {
   color: var(--ink);
   background: var(--body-gradient);
   line-height: 1.5;
-  transition: background 180ms ease, color 180ms ease;
 }
 
 .background-shape {
@@ -61,7 +60,6 @@ body {
   pointer-events: none;
   filter: blur(1px);
   z-index: -1;
-  transition: background 180ms ease;
 }
 
 .shape-one {
@@ -93,7 +91,6 @@ body {
   background: var(--topbar-bg);
   border-bottom: 1px solid var(--border);
   backdrop-filter: blur(6px);
-  transition: background 180ms ease, border-color 180ms ease;
 }
 
 .brand {
@@ -116,8 +113,6 @@ body {
   color: var(--ink);
   border-radius: 12px;
   cursor: pointer;
-  transition: transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease,
-    background 180ms ease;
 }
 
 .nav-btn,
@@ -165,7 +160,6 @@ body {
   box-shadow: var(--shadow);
   padding: clamp(18px, 3vw, 28px);
   animation: fadeUp 420ms ease both;
-  transition: background 180ms ease, border-color 180ms ease, box-shadow 180ms ease;
 }
 
 .hero h2,
@@ -205,8 +199,6 @@ body {
   text-align: left;
   padding: 15px;
   background: var(--card-grad);
-  transition: transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease,
-    background 180ms ease;
 }
 
 .card-btn h3 {
@@ -256,8 +248,6 @@ body {
   border-radius: 12px;
   font: inherit;
   min-height: 48px;
-  transition: background 180ms ease, color 180ms ease, border-color 180ms ease,
-    box-shadow 180ms ease;
 }
 
 .filter-control:focus-visible {
@@ -278,7 +268,6 @@ body {
   border: 1px solid var(--border);
   border-radius: 14px;
   padding: 16px;
-  transition: background 180ms ease, border-color 180ms ease;
 }
 
 .claims-panel h3,
@@ -329,7 +318,6 @@ body {
   border: 1px solid var(--border);
   border-radius: 12px;
   padding: 12px;
-  transition: background 180ms ease, border-color 180ms ease;
 }
 
 .meta-block {
@@ -338,7 +326,6 @@ body {
   border-top: 1px dashed var(--meta-divider);
   border-radius: 0;
   padding: 10px 0 0;
-  transition: border-color 180ms ease;
 }
 
 .response-block h4 {
@@ -374,7 +361,6 @@ body {
   font-size: 0.88rem;
   font-weight: 600;
   line-height: 1.2;
-  transition: background 180ms ease, border-color 180ms ease, color 180ms ease;
 }
 
 .placeholder {
