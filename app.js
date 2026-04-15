@@ -1,26 +1,14 @@
 const ui = {
   homeCards: document.getElementById("home-category-cards"),
-  categoryTabs: document.getElementById("category-tabs"),
+  tagSelect: document.getElementById("tag-select"),
+  searchInput: document.getElementById("argument-search"),
+  filterSummary: document.getElementById("filter-summary"),
   claimsList: document.getElementById("claims-list"),
   responseCard: document.getElementById("response-card"),
   navButtons: document.querySelectorAll(".nav-btn")
 };
 
-const tagDescriptions = {
-  Jesus: "Claims and objections centered on Jesus.",
-  Identity: "Questions about who Jesus is.",
-  History: "Historical reliability and testimony claims.",
-  Truth: "Statements about what truth is and how we know it.",
-  Relativism: "Claims that truth is only perspective-based.",
-  Epistemology: "How knowledge and truth claims are evaluated.",
-  Morality: "Right, wrong, and moral obligation claims.",
-  Ethics: "Frameworks for moral decision-making.",
-  Church: "Objections about Christians and church history.",
-  Science: "Science-related challenges to Christianity.",
-  God: "Claims related to God's existence and action.",
-  Faith: "How trust, belief, and commitment are defined.",
-  Reason: "Rationality, logic, and evidence claims."
-};
+const ALL_TAGS_VALUE = "all-tags";
 
 function toTagId(tagName) {
   return tagName.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
@@ -38,31 +26,112 @@ function getTags() {
       seen.add(tagName);
       return true;
     })
-    .map((tagName) => ({
-      id: toTagId(tagName),
-      name: tagName,
-      shortDescription: tagDescriptions[tagName] || "Explore claims and responses for this tag."
-    }));
+    .map((tagName) => ({ id: toTagId(tagName), name: tagName }));
 }
 
 const tags = getTags();
 
 const state = {
-  activeCategoryId: tags[0]?.id || null,
+  activeCategoryId: ALL_TAGS_VALUE,
+  searchTerm: "",
   activeClaimId: null
 };
 
-function getClaimsForActiveTag() {
-  if (!state.activeCategoryId) {
-    return [];
+function getFilteredClaims() {
+  let filtered = worldviewData;
+
+  if (state.activeCategoryId !== ALL_TAGS_VALUE) {
+    filtered = filtered.filter((claim) => {
+      if (!Array.isArray(claim.tags)) {
+        return false;
+      }
+      return claim.tags.some((tag) => toTagId(tag) === state.activeCategoryId);
+    });
   }
 
-  return worldviewData.filter((claim) => {
-    if (!Array.isArray(claim.tags)) {
-      return false;
-    }
-    return claim.tags.some((tag) => toTagId(tag) === state.activeCategoryId);
+  if (state.searchTerm) {
+    const term = state.searchTerm.toLowerCase();
+    filtered = filtered.filter((claim) => {
+      const argumentText = (claim.argument || "").toLowerCase();
+      const tagText = Array.isArray(claim.tags) ? claim.tags.join(" ").toLowerCase() : "";
+      return argumentText.includes(term) || tagText.includes(term);
+    });
+  }
+
+  return filtered;
+}
+
+function getTagNameById(tagId) {
+  if (tagId === ALL_TAGS_VALUE) {
+    return "All tags";
+  }
+
+  const tag = tags.find((item) => item.id === tagId);
+  return tag ? tag.name : "Unknown tag";
+}
+
+function renderFilterSummary(resultCount) {
+  if (!ui.filterSummary) {
+    return;
+  }
+
+  const tagName = getTagNameById(state.activeCategoryId);
+  const searchPart = state.searchTerm ? ` | Search: "${state.searchTerm}"` : "";
+  ui.filterSummary.textContent = `${resultCount} argument(s) found | Tag: ${tagName}${searchPart}`;
+}
+
+function renderTagFilters() {
+  if (!ui.tagSelect) {
+    return;
+  }
+
+  ui.tagSelect.innerHTML = "";
+
+  const allOption = document.createElement("option");
+  allOption.value = ALL_TAGS_VALUE;
+  allOption.textContent = "All tags";
+  ui.tagSelect.appendChild(allOption);
+
+  tags.forEach((tag) => {
+    const option = document.createElement("option");
+    option.value = tag.id;
+    option.textContent = tag.name;
+    ui.tagSelect.appendChild(option);
   });
+
+  ui.tagSelect.value = state.activeCategoryId;
+
+  if (tags.length === 0) {
+    const noTagsOption = document.createElement("option");
+    noTagsOption.value = ALL_TAGS_VALUE;
+    noTagsOption.textContent = "No tags yet";
+    ui.tagSelect.innerHTML = "";
+    ui.tagSelect.appendChild(noTagsOption);
+    ui.tagSelect.disabled = true;
+    ui.tagSelect.value = ALL_TAGS_VALUE;
+  } else {
+    ui.tagSelect.disabled = false;
+  }
+}
+
+function setupFilters() {
+  if (ui.tagSelect) {
+    ui.tagSelect.addEventListener("change", (event) => {
+      state.activeCategoryId = event.target.value;
+      state.activeClaimId = null;
+      renderClaims();
+      renderResponse();
+    });
+  }
+
+  if (ui.searchInput) {
+    ui.searchInput.addEventListener("input", (event) => {
+      state.searchTerm = event.target.value.trim();
+      state.activeClaimId = null;
+      renderClaims();
+      renderResponse();
+    });
+  }
 }
 
 function scrollToSection(sectionId) {
@@ -73,9 +142,23 @@ function scrollToSection(sectionId) {
 }
 
 function renderHomeCards() {
+  if (!ui.homeCards) {
+    return;
+  }
+
   ui.homeCards.innerHTML = "";
 
-  tags.forEach((tag) => {
+  const cards = tags.length
+    ? tags.map((tag) => ({ ...tag, shortDescription: "Filter arguments by this tag." }))
+    : [
+        {
+          id: ALL_TAGS_VALUE,
+          name: "All tags",
+          shortDescription: "Browse all arguments and use search while tags are being added."
+        }
+      ];
+
+  cards.forEach((tag) => {
     const button = document.createElement("button");
     button.className = "card-btn";
     button.type = "button";
@@ -83,7 +166,9 @@ function renderHomeCards() {
     button.addEventListener("click", () => {
       state.activeCategoryId = tag.id;
       state.activeClaimId = null;
-      renderCategories();
+      if (ui.tagSelect && !ui.tagSelect.disabled) {
+        ui.tagSelect.value = tag.id;
+      }
       renderClaims();
       renderResponse();
       scrollToSection("categories");
@@ -92,35 +177,17 @@ function renderHomeCards() {
   });
 }
 
-function renderCategories() {
-  ui.categoryTabs.innerHTML = "";
-
-  tags.forEach((tag) => {
-    const button = document.createElement("button");
-    button.className = `tab-btn ${tag.id === state.activeCategoryId ? "active" : ""}`;
-    button.type = "button";
-    button.setAttribute("role", "tab");
-    button.setAttribute("aria-selected", String(tag.id === state.activeCategoryId));
-    button.textContent = tag.name;
-
-    button.addEventListener("click", () => {
-      state.activeCategoryId = tag.id;
-      state.activeClaimId = null;
-      renderCategories();
-      renderClaims();
-      renderResponse();
-    });
-
-    ui.categoryTabs.appendChild(button);
-  });
-}
-
 function renderClaims() {
-  const claims = getClaimsForActiveTag();
+  if (!ui.claimsList) {
+    return;
+  }
+
+  const claims = getFilteredClaims();
   ui.claimsList.innerHTML = "";
+  renderFilterSummary(claims.length);
 
   if (!claims.length) {
-    ui.claimsList.innerHTML = "<p class=\"placeholder\">No claims found for this tag yet.</p>";
+    ui.claimsList.innerHTML = "<p class=\"placeholder\">No arguments match this filter yet.</p>";
     return;
   }
 
@@ -141,7 +208,11 @@ function renderClaims() {
 }
 
 function renderResponse() {
-  const claims = getClaimsForActiveTag();
+  if (!ui.responseCard) {
+    return;
+  }
+
+  const claims = getFilteredClaims();
   const claim = claims.find((item) => item.id === state.activeClaimId);
 
   if (!claim) {
@@ -149,7 +220,7 @@ function renderResponse() {
     return;
   }
 
-  const reasoningItems = claim.supportingReasoning
+  const reasoningItems = (claim.supportingReasoning || [])
     .map((point) => `<li>${point}</li>`)
     .join("");
 
@@ -164,11 +235,11 @@ function renderResponse() {
   ui.responseCard.innerHTML = `
     <div class="response-block">
       <h4>Core Issue With The Claim</h4>
-      <p>${claim.coreIssue}</p>
+      <p>${claim.coreIssue || "Not added yet."}</p>
     </div>
     <div class="response-block">
       <h4>Christian Worldview Response</h4>
-      <p>${claim.christianResponse}</p>
+      <p>${claim.christianResponse || "Not added yet."}</p>
     </div>
     <div class="response-block">
       <h4>Tags</h4>
@@ -180,7 +251,7 @@ function renderResponse() {
     </div>
     <div class="response-block">
       <h4>Supporting Reasoning</h4>
-      <ul class="reason-list">${reasoningItems}</ul>
+      ${reasoningItems ? `<ul class="reason-list">${reasoningItems}</ul>` : "<p>Not added yet.</p>"}
     </div>
   `;
 }
@@ -198,8 +269,9 @@ function setupNavigation() {
 
 function initializeApp() {
   setupNavigation();
+  setupFilters();
+  renderTagFilters();
   renderHomeCards();
-  renderCategories();
   renderClaims();
   renderResponse();
 }

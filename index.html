@@ -20,7 +20,7 @@
       <h1 class="brand">Worldview Argument Database</h1>
       <nav class="topbar-nav" aria-label="Main navigation">
         <button class="nav-btn" data-nav-target="home">Home</button>
-        <button class="nav-btn" data-nav-target="categories">Categories</button>
+        <button class="nav-btn" data-nav-target="categories">Tags</button>
       </nav>
     </header>
 
@@ -37,15 +37,29 @@
 
       <section id="categories" class="panel" aria-labelledby="categories-title">
         <div class="section-head">
-          <h2 id="categories-title">Categories</h2>
-          <p>Select a category, then choose a claim to view the full response.</p>
+          <h2 id="categories-title">Tag Explorer</h2>
+          <p>Filter by tag and search arguments to find entries quickly.</p>
         </div>
 
-        <div id="category-tabs" class="category-tabs" role="tablist" aria-label="Worldview categories"></div>
+        <div class="filters-wrap" aria-label="Tag filters">
+          <label class="filter-label" for="tag-select">Tag</label>
+          <select id="tag-select" class="filter-control" aria-label="Select a tag"></select>
+
+          <label class="filter-label" for="argument-search">Search</label>
+          <input
+            id="argument-search"
+            class="filter-control"
+            type="search"
+            placeholder="Search arguments..."
+            aria-label="Search arguments"
+          />
+        </div>
+
+        <p id="filter-summary" class="filter-summary" aria-live="polite"></p>
 
         <div class="content-grid">
           <section class="claims-panel" aria-labelledby="claims-title">
-            <h3 id="claims-title">Claims</h3>
+            <h3 id="claims-title">Arguments</h3>
             <div id="claims-list" class="claims-list" aria-live="polite"></div>
           </section>
 
