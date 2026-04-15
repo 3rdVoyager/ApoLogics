@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Worldview Argument Database</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700&family=Source+Sans+3:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="background-shape shape-one" aria-hidden="true"></div>
+    <div class="background-shape shape-two" aria-hidden="true"></div>
+
+    <header class="topbar">
+      <h1 class="brand">Worldview Argument Database</h1>
+      <nav class="topbar-nav" aria-label="Main navigation">
+        <button class="nav-btn" data-nav-target="home">Home</button>
+        <button class="nav-btn" data-nav-target="categories">Categories</button>
+      </nav>
+    </header>
+
+    <main class="page-wrap">
+      <section id="home" class="panel hero" aria-labelledby="hero-title">
+        <p class="eyebrow">Christian Worldview Class Tool</p>
+        <h2 id="hero-title">Explore Common Claims and Thoughtful Christian Responses</h2>
+        <p>
+          This reference tool helps you review recurring worldview claims and examine
+          structured responses rooted in Christian reasoning.
+        </p>
+        <div class="hero-grid" id="home-category-cards" aria-label="Category shortcuts"></div>
+      </section>
+
+      <section id="categories" class="panel" aria-labelledby="categories-title">
+        <div class="section-head">
+          <h2 id="categories-title">Categories</h2>
+          <p>Select a category, then choose a claim to view the full response.</p>
+        </div>
+
+        <div id="category-tabs" class="category-tabs" role="tablist" aria-label="Worldview categories"></div>
+
+        <div class="content-grid">
+          <section class="claims-panel" aria-labelledby="claims-title">
+            <h3 id="claims-title">Claims</h3>
+            <div id="claims-list" class="claims-list" aria-live="polite"></div>
+          </section>
+
+          <section class="response-panel" aria-labelledby="response-title">
+            <h3 id="response-title">Structured Response</h3>
+            <article id="response-card" class="response-card" aria-live="polite">
+              <p class="placeholder">Select a claim to view details.</p>
+            </article>
+          </section>
+        </div>
+      </section>
+    </main>
+
+    <script src="arguments.js"></script>
+    <script src="app.js"></script>
+  </body>
+</html>
