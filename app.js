@@ -352,16 +352,20 @@ function renderResponse() {
     .join("");
 
   const metaItems = [disciplineItems, worldviewItems].filter(Boolean).join("");
-  const logicalFallacyBadge = claim.logicalFallacy
-    ? `
-      <div class="fallacy-badge-wrap">
-        <span class="fallacy-badge">${claim.logicalFallacy}</span>
-      </div>
-    `
-    : "";
+  const topMetaItems = [
+    claim.logicalFallacy ? `<span class="fallacy-badge">${claim.logicalFallacy}</span>` : "",
+    metaItems
+  ]
+    .filter(Boolean)
+    .join("");
 
   ui.responseCard.innerHTML = `
-    ${logicalFallacyBadge}
+    <p class="response-claim">${claim.claim || claim.argument || "Untitled claim"}</p>
+    ${
+      topMetaItems
+        ? `<div class="response-top-meta chip-wrap">${topMetaItems}</div>`
+        : ""
+    }
     <div class="response-block">
       <h4>Belief</h4>
       <p>${claim.coreIssue || "Not added yet."}</p>
@@ -373,13 +377,6 @@ function renderResponse() {
     <div class="response-block">
       <h4>Supporting Reasoning</h4>
       ${reasoningItems ? `<ul class="reason-list">${reasoningItems}</ul>` : "<p>Not added yet.</p>"}
-    </div>
-    <div class="response-block meta-block">
-      ${
-        metaItems
-          ? `<div class="chip-wrap meta-chip-row">${metaItems}</div>`
-          : "<p>No disciplines or worldview listed for this claim yet.</p>"
-      }
     </div>
   `;
 }

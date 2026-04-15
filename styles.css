@@ -362,21 +362,30 @@ body {
   gap: 8px;
 }
 
-.fallacy-badge-wrap {
-  display: flex;
-  justify-content: flex-start;
+.response-claim {
+  margin: 0;
+  font-size: 1.08rem;
+  font-weight: 800;
+  font-style: italic;
+  line-height: 1.45;
 }
 
 .fallacy-badge {
   display: inline-flex;
   align-items: center;
-  padding: 7px 12px;
+  padding: 4px 10px;
   border-radius: 999px;
   background: linear-gradient(135deg, #ff8a00, #ff4d6d);
   color: #fff8f2;
   font-weight: 700;
+  font-size: 0.84rem;
   letter-spacing: 0.01em;
   border: 1px solid rgba(255, 248, 242, 0.18);
+}
+
+.response-top-meta {
+  align-items: center;
+  gap: 10px;
 }
 
 .response-block {
@@ -384,18 +393,6 @@ body {
   border: 1px solid var(--border);
   border-radius: 12px;
   padding: 8px;
-}
-
-.meta-block {
-  background: transparent;
-  border: none;
-  border-top: 1px dashed var(--meta-divider);
-  border-radius: 0;
-  padding: 6px 0 0;
-}
-
-.meta-chip-row {
-  gap: 10px;
 }
 
 .response-block h4 {
