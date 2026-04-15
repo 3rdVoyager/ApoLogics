@@ -1,13 +1,11 @@
 const ui = {
-  homeCards: document.getElementById("home-category-cards"),
   themeToggle: document.getElementById("theme-toggle"),
   tagSelect: document.getElementById("tag-select"),
   worldviewSelect: document.getElementById("worldview-select"),
   searchInput: document.getElementById("argument-search"),
   resultCount: document.getElementById("result-count"),
   claimsList: document.getElementById("claims-list"),
-  responseCard: document.getElementById("response-card"),
-  navButtons: document.querySelectorAll(".nav-btn")
+  responseCard: document.getElementById("response-card")
 };
 
 const THEME_STORAGE_KEY = "worldview-theme";
@@ -244,45 +242,6 @@ function setupFilters() {
   }
 }
 
-function scrollToSection(sectionId) {
-  const section = document.getElementById(sectionId);
-  if (section) {
-    section.scrollIntoView({ behavior: "smooth", block: "start" });
-  }
-}
-
-function renderHomeCards() {
-  if (!ui.homeCards) {
-    return;
-  }
-
-  ui.homeCards.innerHTML = "";
-
-  if (!tags.length) {
-    return;
-  }
-
-  const cards = tags.map((tag) => ({ ...tag, shortDescription: "Filter arguments by this tag." }));
-
-  cards.forEach((tag) => {
-    const button = document.createElement("button");
-    button.className = "card-btn";
-    button.type = "button";
-    button.innerHTML = `<h3>${tag.name}</h3><p>${tag.shortDescription}</p>`;
-    button.addEventListener("click", () => {
-      state.activeCategoryId = tag.id;
-      state.activeClaimId = null;
-      if (ui.tagSelect && !ui.tagSelect.disabled) {
-        ui.tagSelect.value = tag.id;
-      }
-      renderClaims();
-      renderResponse();
-      scrollToSection("categories");
-    });
-    ui.homeCards.appendChild(button);
-  });
-}
-
 function renderClaims() {
   if (!ui.claimsList) {
     return;
@@ -370,24 +329,11 @@ function renderResponse() {
   `;
 }
 
-function setupNavigation() {
-  ui.navButtons.forEach((button) => {
-    button.addEventListener("click", () => {
-      const target = button.dataset.navTarget;
-      if (target) {
-        scrollToSection(target);
-      }
-    });
-  });
-}
-
 function initializeApp() {
   setupThemeToggle();
-  setupNavigation();
   setupFilters();
   renderTagFilters();
   renderWorldviewFilters();
-  renderHomeCards();
   renderClaims();
   renderResponse();
 }

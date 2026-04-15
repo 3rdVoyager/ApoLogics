@@ -111,7 +111,7 @@ const worldviewData = [
 	},
 	{
 		id: 6,
-		tags: ["Truth"],
+		tags: ["Truth", "Reason"],
 		worldview: ["Postmodernism"],
 		argument: "There is no absolute truth",
 		coreIssue: "",
@@ -121,7 +121,7 @@ const worldviewData = [
 	},
 	{
 		id: 7,
-		tags: ["Truth"],
+		tags: ["Truth", "Reason"],
 		worldview: ["Postmodernism", "New Spirituality"],
 		argument: "Truth is relative to culture or perspective",
 		coreIssue: "",
@@ -131,7 +131,7 @@ const worldviewData = [
 	},
 	{
 		id: 8,
-		tags: ["Truth"],
+		tags: ["Truth", "Reason"],
 		worldview: ["Postmodernism"],
 		argument: "You can't really know what's true",
 		coreIssue: "",
@@ -141,7 +141,7 @@ const worldviewData = [
 	},
 	{
 		id: 9,
-		tags: ["Truth", "Science"],
+		tags: ["Truth", "Science", "Reason"],
 		worldview: ["Secularism"],
 		argument: "Science is the only reliable way to know truth",
 		coreIssue: "",
@@ -151,7 +151,7 @@ const worldviewData = [
 	},
 	{
 		id: 10,
-		tags: ["Faith and Reason", "Truth"],
+		tags: ["Faith", "Reason", "Truth"],
 		worldview: ["Secularism"],
 		argument: "Faith is belief without evidence",
 		coreIssue: "",
@@ -211,7 +211,7 @@ const worldviewData = [
 	},
 	{
 		id: 16,
-		tags: ["God", "Evil and Suffering"],
+		tags: ["God", "Evil"],
 		worldview: ["Secularism"],
 		argument: "If God is good and all-powerful, why is there evil?",
 		coreIssue: "",
@@ -221,7 +221,7 @@ const worldviewData = [
 	},
 	{
 		id: 17,
-		tags: ["God", "Evil and Suffering"],
+		tags: ["God", "Evil"],
 		worldview: ["Secularism"],
 		argument: "Suffering disproves a loving God",
 		coreIssue: "",
@@ -231,7 +231,7 @@ const worldviewData = [
 	},
 	{
 		id: 18,
-		tags: ["God", "Evil and Suffering"],
+		tags: ["God", "Evil"],
 		worldview: ["Secularism"],
 		argument: "The world is too broken to have a good creator",
 		coreIssue: "",
@@ -241,7 +241,7 @@ const worldviewData = [
 	},
 	{
 		id: 19,
-		tags: ["God", "Evil and Suffering"],
+		tags: ["God", "Evil"],
 		worldview: ["Secularism"],
 		argument: "Natural disasters make no sense if God is in control",
 		coreIssue: "",
@@ -351,7 +351,7 @@ const worldviewData = [
 	},
 	{
 		id: 30,
-		tags: ["Truth"],
+		tags: ["Truth", "Faith"],
 		worldview: ["New Spirituality", "Postmodernism"],
 		argument: "All religions are basically the same",
 		coreIssue: "",
@@ -361,7 +361,7 @@ const worldviewData = [
 	},
 	{
 		id: 31,
-		tags: ["Truth", "Jesus"],
+		tags: ["Truth", "Jesus", "Faith"],
 		worldview: ["New Spirituality"],
 		argument: "Christianity is just one path among many",
 		coreIssue: "",
