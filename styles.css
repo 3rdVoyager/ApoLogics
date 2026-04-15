@@ -9,6 +9,36 @@
   --border: #d9d2c3;
   --shadow: 0 18px 40px rgba(26, 35, 33, 0.09);
   --radius: 16px;
+  --body-gradient: radial-gradient(circle at top left, #fefcf8 0, #f6f2e8 42%, #f3efe6 100%);
+  --shape-one-grad: linear-gradient(140deg, rgba(31, 91, 89, 0.15), rgba(31, 91, 89, 0.02));
+  --shape-two-grad: linear-gradient(220deg, rgba(143, 119, 75, 0.12), rgba(143, 119, 75, 0.02));
+  --topbar-bg: rgba(248, 246, 241, 0.92);
+  --card-grad: linear-gradient(160deg, #ffffff, #f5f1e8);
+  --chip-bg: linear-gradient(180deg, #f8fffd, #e8f5f2);
+  --chip-border: rgba(31, 91, 89, 0.22);
+  --chip-ink: #1e4e4b;
+  --meta-divider: #cec6b7;
+}
+
+[data-theme="dark"] {
+  --bg: #111715;
+  --surface: #1a211f;
+  --surface-alt: #202927;
+  --ink: #e3ece8;
+  --muted: #a8b6b1;
+  --accent: #79c7bb;
+  --accent-soft: #284640;
+  --border: #364541;
+  --shadow: 0 18px 40px rgba(0, 0, 0, 0.35);
+  --body-gradient: radial-gradient(circle at top left, #101513 0, #131a18 45%, #0d1211 100%);
+  --shape-one-grad: linear-gradient(140deg, rgba(121, 199, 187, 0.18), rgba(121, 199, 187, 0.03));
+  --shape-two-grad: linear-gradient(220deg, rgba(122, 165, 120, 0.14), rgba(122, 165, 120, 0.03));
+  --topbar-bg: rgba(17, 23, 21, 0.9);
+  --card-grad: linear-gradient(160deg, #1e2725, #19201f);
+  --chip-bg: linear-gradient(180deg, #233936, #1d312e);
+  --chip-border: rgba(121, 199, 187, 0.35);
+  --chip-ink: #cbebe5;
+  --meta-divider: #3a4b46;
 }
 
 * {
@@ -20,8 +50,9 @@ body {
   min-height: 100vh;
   font-family: "Source Sans 3", "Segoe UI", sans-serif;
   color: var(--ink);
-  background: radial-gradient(circle at top left, #fefcf8 0, #f6f2e8 42%, #f3efe6 100%);
+  background: var(--body-gradient);
   line-height: 1.5;
+  transition: background 180ms ease, color 180ms ease;
 }
 
 .background-shape {
@@ -30,6 +61,7 @@ body {
   pointer-events: none;
   filter: blur(1px);
   z-index: -1;
+  transition: background 180ms ease;
 }
 
 .shape-one {
@@ -37,7 +69,7 @@ body {
   height: 320px;
   right: -100px;
   top: -90px;
-  background: linear-gradient(140deg, rgba(31, 91, 89, 0.15), rgba(31, 91, 89, 0.02));
+  background: var(--shape-one-grad);
 }
 
 .shape-two {
@@ -45,7 +77,7 @@ body {
   height: 260px;
   left: -70px;
   bottom: 10%;
-  background: linear-gradient(220deg, rgba(143, 119, 75, 0.12), rgba(143, 119, 75, 0.02));
+  background: var(--shape-two-grad);
 }
 
 .topbar {
@@ -58,9 +90,10 @@ body {
   gap: 12px;
   align-items: center;
   padding: 14px 5vw;
-  background: rgba(248, 246, 241, 0.92);
+  background: var(--topbar-bg);
   border-bottom: 1px solid var(--border);
   backdrop-filter: blur(6px);
+  transition: background 180ms ease, border-color 180ms ease;
 }
 
 .brand {
@@ -76,7 +109,8 @@ body {
 
 .nav-btn,
 .card-btn,
-.claim-btn {
+.claim-btn,
+.theme-toggle {
   border: 1px solid var(--border);
   background: var(--surface);
   color: var(--ink);
@@ -87,7 +121,8 @@ body {
 }
 
 .nav-btn,
-.filter-control {
+.filter-control,
+.theme-toggle {
   padding: 9px 14px;
 }
 
@@ -95,9 +130,14 @@ body {
   font-weight: 600;
 }
 
+.theme-toggle {
+  font-weight: 600;
+}
+
 .nav-btn:hover,
 .card-btn:hover,
-.claim-btn:hover {
+.claim-btn:hover,
+.theme-toggle:hover {
   transform: translateY(-2px);
   border-color: #b8ac96;
   box-shadow: 0 10px 20px rgba(33, 36, 34, 0.08);
@@ -105,7 +145,8 @@ body {
 
 .nav-btn:focus-visible,
 .card-btn:focus-visible,
-.claim-btn:focus-visible {
+.claim-btn:focus-visible,
+.theme-toggle:focus-visible {
   outline: 2px solid var(--accent);
   outline-offset: 1px;
 }
@@ -124,6 +165,7 @@ body {
   box-shadow: var(--shadow);
   padding: clamp(18px, 3vw, 28px);
   animation: fadeUp 420ms ease both;
+  transition: background 180ms ease, border-color 180ms ease, box-shadow 180ms ease;
 }
 
 .hero h2,
@@ -162,7 +204,9 @@ body {
 .card-btn {
   text-align: left;
   padding: 15px;
-  background: linear-gradient(160deg, #ffffff, #f5f1e8);
+  background: var(--card-grad);
+  transition: transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease,
+    background 180ms ease;
 }
 
 .card-btn h3 {
@@ -183,10 +227,15 @@ body {
 
 .filters-wrap {
   display: grid;
-  grid-template-columns: 90px minmax(170px, 260px) 90px minmax(220px, 1fr);
-  gap: 10px;
-  align-items: center;
-  margin: 14px 0 8px;
+  grid-template-columns: minmax(180px, 250px) minmax(200px, 280px) minmax(240px, 1fr);
+  gap: 14px;
+  align-items: end;
+  margin: 14px 0 10px;
+}
+
+.filter-group {
+  display: grid;
+  gap: 6px;
 }
 
 .claim-btn.active {
@@ -197,6 +246,7 @@ body {
 .filter-label {
   font-weight: 700;
   color: var(--muted);
+  font-size: 0.95rem;
 }
 
 .filter-control {
@@ -205,19 +255,15 @@ body {
   color: var(--ink);
   border-radius: 12px;
   font: inherit;
-  transition: border-color 180ms ease, box-shadow 180ms ease;
+  min-height: 48px;
+  transition: background 180ms ease, color 180ms ease, border-color 180ms ease,
+    box-shadow 180ms ease;
 }
 
 .filter-control:focus-visible {
   border-color: var(--accent);
   box-shadow: 0 0 0 2px rgba(31, 91, 89, 0.18);
   outline: none;
-}
-
-.filter-summary {
-  margin: 0 0 14px;
-  color: var(--muted);
-  font-size: 0.95rem;
 }
 
 .content-grid {
@@ -232,11 +278,31 @@ body {
   border: 1px solid var(--border);
   border-radius: 14px;
   padding: 16px;
+  transition: background 180ms ease, border-color 180ms ease;
 }
 
 .claims-panel h3,
 .response-panel h3 {
   margin-top: 0;
+}
+
+.claims-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.claims-head h3 {
+  margin: 0;
+}
+
+.result-count {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.92rem;
+  white-space: nowrap;
 }
 
 .claims-list {
@@ -263,6 +329,16 @@ body {
   border: 1px solid var(--border);
   border-radius: 12px;
   padding: 12px;
+  transition: background 180ms ease, border-color 180ms ease;
+}
+
+.meta-block {
+  background: transparent;
+  border: none;
+  border-top: 1px dashed var(--meta-divider);
+  border-radius: 0;
+  padding: 10px 0 0;
+  transition: border-color 180ms ease;
 }
 
 .response-block h4 {
@@ -279,6 +355,26 @@ body {
 .reason-list {
   margin: 0;
   padding-left: 18px;
+}
+
+.chip-wrap {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 5px 11px;
+  border-radius: 999px;
+  border: 1px solid var(--chip-border);
+  background: var(--chip-bg);
+  color: var(--chip-ink);
+  font-size: 0.88rem;
+  font-weight: 600;
+  line-height: 1.2;
+  transition: background 180ms ease, border-color 180ms ease, color 180ms ease;
 }
 
 .placeholder {
@@ -300,6 +396,7 @@ body {
 @media (max-width: 880px) {
   .filters-wrap {
     grid-template-columns: 1fr;
+    gap: 10px;
   }
 
   .content-grid {

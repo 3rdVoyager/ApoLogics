@@ -1,12 +1,62 @@
 const ui = {
   homeCards: document.getElementById("home-category-cards"),
+  themeToggle: document.getElementById("theme-toggle"),
   tagSelect: document.getElementById("tag-select"),
+  worldviewSelect: document.getElementById("worldview-select"),
   searchInput: document.getElementById("argument-search"),
-  filterSummary: document.getElementById("filter-summary"),
+  resultCount: document.getElementById("result-count"),
   claimsList: document.getElementById("claims-list"),
   responseCard: document.getElementById("response-card"),
   navButtons: document.querySelectorAll(".nav-btn")
 };
+
+const THEME_STORAGE_KEY = "worldview-theme";
+
+function applyTheme(theme) {
+  const mode = theme === "dark" ? "dark" : "light";
+  document.documentElement.setAttribute("data-theme", mode);
+
+  if (ui.themeToggle) {
+    const isDark = mode === "dark";
+    ui.themeToggle.textContent = isDark ? "Light mode" : "Dark mode";
+    ui.themeToggle.setAttribute("aria-pressed", String(isDark));
+  }
+}
+
+function getPreferredTheme() {
+  try {
+    const saved = localStorage.getItem(THEME_STORAGE_KEY);
+    if (saved === "dark" || saved === "light") {
+      return saved;
+    }
+  } catch {
+    // If storage is blocked, fall back to OS preference.
+  }
+
+  const prefersDark =
+    typeof window.matchMedia === "function" &&
+    window.matchMedia("(prefers-color-scheme: dark)").matches;
+  return prefersDark ? "dark" : "light";
+}
+
+function setupThemeToggle() {
+  applyTheme(getPreferredTheme());
+
+  if (!ui.themeToggle) {
+    return;
+  }
+
+  ui.themeToggle.addEventListener("click", () => {
+    const current = document.documentElement.getAttribute("data-theme") === "dark" ? "dark" : "light";
+    const next = current === "dark" ? "light" : "dark";
+    applyTheme(next);
+    try {
+      localStorage.setItem(THEME_STORAGE_KEY, next);
+    } catch {
+      // Ignore storage errors and keep runtime theme change.
+    }
+  });
+}
 
 function toTagId(tagName) {
   return tagName.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
@@ -27,10 +77,31 @@ function getTags() {
     .map((tagName) => ({ id: toTagId(tagName), name: tagName }));
 }
 
+function toWorldviewId(worldviewName) {
+  return worldviewName.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+}
+
+function getWorldviews() {
+  const seen = new Set();
+
+  return worldviewData
+    .flatMap((claim) => (Array.isArray(claim.worldview) ? claim.worldview : []))
+    .filter((worldviewName) => {
+      if (!worldviewName || seen.has(worldviewName)) {
+        return false;
+      }
+      seen.add(worldviewName);
+      return true;
+    })
+    .map((worldviewName) => ({ id: toWorldviewId(worldviewName), name: worldviewName }));
+}
+
 const tags = getTags();
+const worldviews = getWorldviews();
 
 const state = {
   activeCategoryId: null,
+  activeWorldviewId: null,
   searchTerm: "",
   activeClaimId: null
 };
@@ -47,6 +118,15 @@ function getFilteredClaims() {
     });
   }
 
+  if (state.activeWorldviewId) {
+    filtered = filtered.filter((claim) => {
+      if (!Array.isArray(claim.worldview)) {
+        return false;
+      }
+      return claim.worldview.some((item) => toWorldviewId(item) === state.activeWorldviewId);
+    });
+  }
+
   if (state.searchTerm) {
     const term = state.searchTerm.toLowerCase();
     filtered = filtered.filter((claim) => {
@@ -59,23 +139,12 @@ function getFilteredClaims() {
   return filtered;
 }
 
-function getTagNameById(tagId) {
-  if (!tagId) {
-    return "No tag selected";
-  }
-
-  const tag = tags.find((item) => item.id === tagId);
-  return tag ? tag.name : "Unknown tag";
-}
-
 function renderFilterSummary(resultCount) {
-  if (!ui.filterSummary) {
+  if (!ui.resultCount) {
     return;
   }
 
-  const tagName = getTagNameById(state.activeCategoryId);
-  const searchPart = state.searchTerm ? ` | Search: "${state.searchTerm}"` : "";
-  ui.filterSummary.textContent = `${resultCount} argument(s) found | Tag: ${tagName}${searchPart}`;
+  ui.resultCount.textContent = `${resultCount} argument(s) found`;
 }
 
 function renderTagFilters() {
@@ -112,10 +181,53 @@ function renderTagFilters() {
   }
 }
 
+function renderWorldviewFilters() {
+  if (!ui.worldviewSelect) {
+    return;
+  }
+
+  ui.worldviewSelect.innerHTML = "";
+
+  const placeholderOption = document.createElement("option");
+  placeholderOption.value = "";
+  placeholderOption.textContent = "Filter by worldview (optional)";
+  ui.worldviewSelect.appendChild(placeholderOption);
+
+  worldviews.forEach((worldview) => {
+    const option = document.createElement("option");
+    option.value = worldview.id;
+    option.textContent = worldview.name;
+    ui.worldviewSelect.appendChild(option);
+  });
+
+  ui.worldviewSelect.value = state.activeWorldviewId || "";
+
+  if (worldviews.length === 0) {
+    const noOptions = document.createElement("option");
+    noOptions.value = "";
+    noOptions.textContent = "No worldviews yet";
+    ui.worldviewSelect.innerHTML = "";
+    ui.worldviewSelect.appendChild(noOptions);
+    ui.worldviewSelect.disabled = true;
+    ui.worldviewSelect.value = "";
+  } else {
+    ui.worldviewSelect.disabled = false;
+  }
+}
+
 function setupFilters() {
   if (ui.tagSelect) {
     ui.tagSelect.addEventListener("change", (event) => {
       state.activeCategoryId = event.target.value || null;
+      state.activeClaimId = null;
+      renderClaims();
+      renderResponse();
+    });
+  }
+
+  if (ui.worldviewSelect) {
+    ui.worldviewSelect.addEventListener("change", (event) => {
+      state.activeWorldviewId = event.target.value || null;
       state.activeClaimId = null;
       renderClaims();
       renderResponse();
@@ -223,7 +335,11 @@ function renderResponse() {
     .join("");
 
   const tagItems = (claim.tags || [])
-    .map((tag) => `<li>${tag}</li>`)
+    .map((tag) => `<span class="chip">${tag}</span>`)
+    .join("");
+
+  const worldviewItems = (claim.worldview || [])
+    .map((item) => `<span class="chip">${item}</span>`)
     .join("");
 
   ui.responseCard.innerHTML = `
@@ -236,16 +352,20 @@ function renderResponse() {
       <p>${claim.christianResponse || "Not added yet."}</p>
     </div>
     <div class="response-block">
-      <h4>Tags</h4>
-      ${tagItems ? `<ul class="reason-list">${tagItems}</ul>` : "<p>No tags listed for this claim yet.</p>"}
-    </div>
-    <div class="response-block">
       <h4>Bible Verse(s)</h4>
       ${verseItems ? `<ul class="reason-list">${verseItems}</ul>` : "<p>No Bible verses listed for this claim yet.</p>"}
     </div>
     <div class="response-block">
       <h4>Supporting Reasoning</h4>
       ${reasoningItems ? `<ul class="reason-list">${reasoningItems}</ul>` : "<p>Not added yet.</p>"}
+    </div>
+    <div class="response-block meta-block">
+      <h4>Tags</h4>
+      ${tagItems ? `<div class="chip-wrap">${tagItems}</div>` : "<p>No tags listed for this claim yet.</p>"}
+    </div>
+    <div class="response-block meta-block">
+      <h4>Worldview(s)</h4>
+      ${worldviewItems ? `<div class="chip-wrap">${worldviewItems}</div>` : "<p>No worldview listed for this claim yet.</p>"}
     </div>
   `;
 }
@@ -262,9 +382,11 @@ function setupNavigation() {
 }
 
 function initializeApp() {
+  setupThemeToggle();
   setupNavigation();
   setupFilters();
   renderTagFilters();
+  renderWorldviewFilters();
   renderHomeCards();
   renderClaims();
   renderResponse();

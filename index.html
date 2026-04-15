@@ -18,6 +18,9 @@
 
     <header class="topbar">
       <h1 class="brand">Worldview Argument Database</h1>
+      <button id="theme-toggle" class="theme-toggle" type="button" aria-pressed="false">
+        Dark mode
+      </button>
     </header>
 
     <main class="page-wrap">
@@ -34,28 +37,42 @@
       <section id="categories" class="panel" aria-labelledby="categories-title">
         <div class="section-head">
           <h2 id="categories-title">Argument Explorer</h2>
-          <p>Filter by tag and search arguments to find entries quickly.</p>
+          <p>Filter by tag, worldview, and search to find entries quickly.</p>
         </div>
 
         <div class="filters-wrap" aria-label="Tag filters">
-          <label class="filter-label" for="tag-select">Tag</label>
-          <select id="tag-select" class="filter-control" aria-label="Select a tag"></select>
+          <div class="filter-group">
+            <label class="filter-label" for="tag-select">Tag</label>
+            <select id="tag-select" class="filter-control" aria-label="Select a tag"></select>
+          </div>
 
-          <label class="filter-label" for="argument-search">Search</label>
-          <input
-            id="argument-search"
-            class="filter-control"
-            type="search"
-            placeholder="Search arguments..."
-            aria-label="Search arguments"
-          />
+          <div class="filter-group">
+            <label class="filter-label" for="worldview-select">Worldview</label>
+            <select
+              id="worldview-select"
+              class="filter-control"
+              aria-label="Select a worldview"
+            ></select>
+          </div>
+
+          <div class="filter-group">
+            <label class="filter-label" for="argument-search">Search</label>
+            <input
+              id="argument-search"
+              class="filter-control"
+              type="search"
+              placeholder="Search arguments..."
+              aria-label="Search arguments"
+            />
+          </div>
         </div>
-
-        <p id="filter-summary" class="filter-summary" aria-live="polite"></p>
 
         <div class="content-grid">
           <section class="claims-panel" aria-labelledby="claims-title">
-            <h3 id="claims-title">Arguments</h3>
+            <div class="claims-head">
+              <h3 id="claims-title">Arguments</h3>
+              <p id="result-count" class="result-count" aria-live="polite"></p>
+            </div>
             <div id="claims-list" class="claims-list" aria-live="polite"></div>
           </section>
 
