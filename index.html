@@ -18,10 +18,103 @@
 
     <header class="topbar">
       <h1 class="brand">ApoLogics: The Worldview Debugger</h1>
-      <button id="theme-toggle" class="theme-toggle" type="button" aria-pressed="false">
-        Dark mode
-      </button>
+      <div class="topbar-actions">
+        <button
+          id="fallacy-reference-toggle"
+          class="topbar-button"
+          type="button"
+          aria-haspopup="dialog"
+          aria-controls="fallacy-reference"
+          aria-expanded="false"
+        >
+          Fallacy Reference
+        </button>
+        <button id="theme-toggle" class="theme-toggle topbar-button" type="button" aria-pressed="false">
+          Dark mode
+        </button>
+      </div>
     </header>
+
+    <div
+      id="fallacy-reference"
+      class="modal-shell"
+      hidden
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="fallacy-reference-title"
+    >
+      <div class="modal-backdrop" data-close-fallacy-reference="true"></div>
+      <section class="modal-panel panel">
+        <div class="modal-head">
+          <div>
+            <p class="eyebrow">Reference</p>
+            <h2 id="fallacy-reference-title">Logical Fallacies</h2>
+          </div>
+          <button
+            id="fallacy-reference-close"
+            class="topbar-button"
+            type="button"
+            data-close-fallacy-reference="true"
+            aria-label="Close fallacy reference"
+          >
+            Close
+          </button>
+        </div>
+
+        <div class="fallacy-list" aria-label="Logical fallacy reference entries">
+          <article class="fallacy-card">
+            <h3>Ad Hominem</h3>
+            <p>Attacking the person’s character rather than their argument.</p>
+            <p class="fallacy-example">"You only believe in the Bible because you're a closed-minded person."</p>
+          </article>
+          <article class="fallacy-card">
+            <h3>Strawman</h3>
+            <p>Misrepresenting an opponent's position to make it easier to attack.</p>
+            <p class="fallacy-example">"Christians hate science because they believe the world was made in six literal days."</p>
+          </article>
+          <article class="fallacy-card">
+            <h3>False Dilemma</h3>
+            <p>Acting as if only two choices exist when there are actually more.</p>
+            <p class="fallacy-example">"Either God is all-powerful and can't stop evil, or He is good and just isn't powerful enough."</p>
+          </article>
+          <article class="fallacy-card">
+            <h3>Hasty Generalization</h3>
+            <p>Making a broad claim based on a very small or unique sample size.</p>
+            <p class="fallacy-example">"I knew a Christian who was a hypocrite, therefore all Christians are hypocrites."</p>
+          </article>
+          <article class="fallacy-card">
+            <h3>Genetic Fallacy</h3>
+            <p>Arguing that a claim is true or false based solely on where it came from.</p>
+            <p class="fallacy-example">"You only believe in God because you were raised in a Christian home in America."</p>
+          </article>
+          <article class="fallacy-card">
+            <h3>Circular Reasoning</h3>
+            <p>When the conclusion of an argument is used as one of the premises.</p>
+            <p class="fallacy-example">"The Bible is true because it says it’s the Word of God, and God wouldn't lie."</p>
+          </article>
+          <article class="fallacy-card">
+            <h3>Non-Sequitur</h3>
+            <p>A conclusion that does not logically follow from the previous statement.</p>
+            <p class="fallacy-example">"Religion has caused wars, therefore God does not exist."</p>
+          </article>
+          <article class="fallacy-card">
+            <h3>Self-Refuting</h3>
+            <p>A statement that makes itself false by its own standard.</p>
+            <p class="fallacy-example">"There is no such thing as absolute truth." (This claim asserts itself as an absolute truth).</p>
+          </article>
+          <article class="fallacy-card">
+            <h3>Equivocation</h3>
+            <p>Using the same word in two different ways to mislead.</p>
+            <p class="fallacy-example">"Science is based on faith in the laws of nature, so science is just another religion."</p>
+          </article>
+          <article class="fallacy-card">
+            <h3>Red Herring</h3>
+            <p>Introducing an irrelevant topic to divert attention from the main issue.</p>
+            <p class="fallacy-example">"Why are we talking about the Resurrection? Look at all the bad things the Church did in the Crusades!"</p>
+          </article>
+        </div>
+      </section>
+    </div>
 
     <main class="page-wrap">
       <section id="home" class="panel hero" aria-labelledby="hero-title">

@@ -1,4 +1,7 @@
 const ui = {
+  fallacyReference: document.getElementById("fallacy-reference"),
+  fallacyReferenceToggle: document.getElementById("fallacy-reference-toggle"),
+  fallacyReferenceClose: document.getElementById("fallacy-reference-close"),
   themeToggle: document.getElementById("theme-toggle"),
   tagSelect: document.getElementById("tag-select"),
   worldviewSelect: document.getElementById("worldview-select"),
@@ -9,6 +12,53 @@ const ui = {
 };
 
 const THEME_STORAGE_KEY = "worldview-theme";
+
+function setFallacyReferenceOpen(isOpen) {
+  if (!ui.fallacyReference || !ui.fallacyReferenceToggle) {
+    return;
+  }
+
+  ui.fallacyReference.hidden = !isOpen;
+  ui.fallacyReference.setAttribute("aria-hidden", String(!isOpen));
+  ui.fallacyReferenceToggle.setAttribute("aria-expanded", String(isOpen));
+  document.body.style.overflow = isOpen ? "hidden" : "";
+}
+
+function setupFallacyReference() {
+  if (!ui.fallacyReference || !ui.fallacyReferenceToggle) {
+    return;
+  }
+
+  ui.fallacyReferenceToggle.onclick = () => {
+    const isOpen = ui.fallacyReference.hidden;
+    setFallacyReferenceOpen(isOpen);
+  };
+
+  if (ui.fallacyReferenceClose) {
+    ui.fallacyReferenceClose.onclick = () => {
+      setFallacyReferenceOpen(false);
+    };
+  }
+
+  const backdrop = ui.fallacyReference.querySelector(".modal-backdrop");
+  if (backdrop) {
+    backdrop.onclick = () => {
+      setFallacyReferenceOpen(false);
+    };
+  }
+
+  ui.fallacyReference.onclick = (event) => {
+    if (event.target === ui.fallacyReference) {
+      setFallacyReferenceOpen(false);
+    }
+  };
+
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape" && ui.fallacyReference && !ui.fallacyReference.hidden) {
+      setFallacyReferenceOpen(false);
+    }
+  });
+}
 
 function applyTheme(theme) {
   const mode = theme === "dark" ? "dark" : "light";
@@ -330,6 +380,7 @@ function renderResponse() {
 }
 
 function initializeApp() {
+  setupFallacyReference();
   setupThemeToggle();
   setupFilters();
   renderTagFilters();
